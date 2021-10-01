@@ -1,17 +1,14 @@
-version: "3"
+version: '3.1'
 services:
-  teste-postgres-compose:
-    image: postgres:9.6
-    container_name: assinatura
-    ports:
-      - "5434:5432"
+  db:
+    image: mysql
+    container_name: mysql
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: admin
-        POSTGRES_DB: springboot
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - thiago_data:/var/lib/mysql
 
-
-
-
-
-
+volumes:
+  thiago_data:

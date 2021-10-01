@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-import javax.persistence.Entity;
+//import javax.persistence.Entity;
 
 @SpringBootApplication
 @EntityScan(basePackages = "curso.springboot.model") //indica ao aplication que existe stributos do módel a ser inseridos no model
