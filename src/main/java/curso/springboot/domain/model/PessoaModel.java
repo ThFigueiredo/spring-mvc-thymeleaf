@@ -34,7 +34,7 @@ public class PessoaModel implements Serializable {
 
     private String quaquer;
     //CRIANDO RELACIONAMENTO 1 PARA N
-    @OneToMany(mappedBy = "pessoaModel")
+    @OneToMany(mappedBy = "pessoaModel", orphanRemoval = true, cascade = CascadeType.ALL) //orphanRemoval = true, cascade = CascadeType.ALL ->removendo todos os telefones quando uma pessoa for excluida
     private List<TelefoneModel> telefones;
     //--CRIANDO RELACIONAMENTO 1 PARA N
     public Long getId() {

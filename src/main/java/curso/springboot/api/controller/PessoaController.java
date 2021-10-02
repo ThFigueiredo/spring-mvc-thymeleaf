@@ -72,6 +72,20 @@ public class PessoaController {
 
         return modelAndView;
     }
+    //EXCLUIR TELEFONE
+    @GetMapping("/removertelefone/{idtelefone}")
+    public ModelAndView removertelefone(@PathVariable("idtelefone") Long idtelefone) {
+
+        PessoaModel pessoaModel = telefoneRepository.findById(idtelefone).get().getPessoa(); //carregando e retornando o objeto telefone
+
+        telefoneRepository.deleteById(idtelefone); //deletando um telefone específico
+
+        ModelAndView modelAndView = new ModelAndView("cadastro/telefones"); //retornando pra mesma tela
+        modelAndView.addObject("pessoaobj", pessoaModel); //passando o objeto pai pra mostrar na tela
+        modelAndView.addObject("telefones", telefoneRepository.getTelefones(pessoaModel.getId())); //carrega novamente - o que foi removido
+
+        return modelAndView;
+    }
     //FAZENDO A PESQUISA POR NOME
     @PostMapping("**/pesquisarpessoa")
     public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa) {
