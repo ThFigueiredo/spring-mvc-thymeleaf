@@ -2,6 +2,7 @@ package curso.springboot.domain.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity //faz o hibernate identificar e criar tabela no banco
 public class PessoaModel implements Serializable {
@@ -14,7 +15,10 @@ public class PessoaModel implements Serializable {
     private String nome;
     private String sobrenome;
     private int idade;
-
+    //CRIANDO RELACIONAMENTO 1 PARA N
+    @OneToMany(mappedBy = "pessoaModel")
+    private List<TelefoneModel> telefones;
+    //--CRIANDO RELACIONAMENTO 1 PARA N
     public Long getId() {
         return id;
     }
