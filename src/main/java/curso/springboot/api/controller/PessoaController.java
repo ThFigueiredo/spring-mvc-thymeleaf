@@ -20,11 +20,22 @@ public class PessoaController {
         return "cadastro/cadastropessoa";
     }
 
-    //SALVAR (SALVA REDIRECIONANDO PRA MESMA PASTA)
+//    //SALVAR (SALVA REDIRECIONANDO PRA MESMA PASTA)
+//    @RequestMapping(method = RequestMethod.POST, value = "/salvarpessoa")
+//    public String salvar(PessoaModel pessoaModel) {
+//        pessoaRepository.save(pessoaModel);
+//        return "cadastro/cadastropessoa";
+//    }
+    //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
     @RequestMapping(method = RequestMethod.POST, value = "/salvarpessoa")
-    public String salvar(PessoaModel pessoaModel) {
+    public ModelAndView salvar(PessoaModel pessoaModel) {
         pessoaRepository.save(pessoaModel);
-        return "cadastro/cadastropessoa";
+
+        ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
+        Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
+        andView.addObject("pessoas", pessoaIt);
+
+        return andView;
     }
 
     //LISTAR
