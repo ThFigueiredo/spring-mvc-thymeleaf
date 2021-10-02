@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class PessoaController {
@@ -15,16 +16,23 @@ public class PessoaController {
 
     //SALVAR (MÉTODO DE REDIRECIONAMENTO)
     @RequestMapping(method = RequestMethod.GET, value = "/cadastropessoa")
-    public String inicio(){ //início = método
+    public String inicio() { //início = método
         return "cadastro/cadastropessoa";
     }
 
     //SALVAR (SALVA REDIRECIONANDO PRA MESMA PASTA)
-    @RequestMapping(method=RequestMethod.POST, value="/salvarpessoa")
+    @RequestMapping(method = RequestMethod.POST, value = "/salvarpessoa")
     public String salvar(PessoaModel pessoaModel) {
         pessoaRepository.save(pessoaModel);
         return "cadastro/cadastropessoa";
     }
 
-
+    //LISTAR
+    @RequestMapping(method = RequestMethod.GET, value = "/listarpessoas")
+    public ModelAndView pessoas() {
+        ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
+        Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
+        andView.addObject("pessoas", pessoaIt); //pessoas faz interação com thymeleaf
+        return andView;
+    }
 }
