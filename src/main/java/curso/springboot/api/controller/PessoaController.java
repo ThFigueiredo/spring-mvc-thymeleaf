@@ -25,6 +25,10 @@ public class PessoaController {
     public ModelAndView inicio() { //início = nome do método
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
         modelAndView.addObject("pessoaobj", new PessoaModel());
+
+
+        Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
+        modelAndView.addObject("pessoas", pessoaIt); //pessoas faz interação com thymeleaf
         return modelAndView;
     }
     //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
@@ -46,7 +50,6 @@ public class PessoaController {
         Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
         andView.addObject("pessoas", pessoaIt); //pessoas faz interação com thymeleaf
         andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio pois está retornnado pra mesma tela
-
         return andView;
     }
     //EDITAR
