@@ -1,7 +1,9 @@
 package curso.springboot.api.controller;
 
 import curso.springboot.domain.model.PessoaModel;
+import curso.springboot.domain.model.TelefoneModel;
 import curso.springboot.domain.repository.PessoaRepository;
+import curso.springboot.domain.repository.TelefoneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,9 @@ public class PessoaController {
 
     @Autowired //anotação autowired
     private PessoaRepository pessoaRepository;
+
+    @Autowired
+    private TelefoneRepository telefoneRepository;
 
     //SALVAR (MÉTODO DE REDIRECIONAMENTO)
     @RequestMapping(method = RequestMethod.GET, value = "/cadastropessoa")
@@ -85,6 +90,20 @@ public class PessoaController {
         modelAndView.addObject("pessoaobj", pessoa.get());
         return modelAndView;
 
+    }
+    //CADASTRO TELEFONES PARA UMA PESSOA
+    @PostMapping("**/addfonePessoa/{pessoaid}")
+    public ModelAndView addFonePessoa(TelefoneModel telefoneModel,
+                                      @PathVariable("pessoaid") Long pessoaid) {
+
+        PessoaModel pessoa = pessoaRepository.findById(pessoaid).get();
+        telefoneModel.setPessoa(pessoa);
+
+        telefoneRepository.save(telefoneModel);
+
+        ModelAndView modelAndView = new ModelAndView("cadastro/telefones");
+        modelAndView.addObject("pessoaobj", pessoa);
+        return modelAndView;
     }
 
 
