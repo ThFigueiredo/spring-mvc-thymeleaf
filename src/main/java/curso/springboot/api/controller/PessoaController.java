@@ -88,6 +88,7 @@ public class PessoaController {
 
         ModelAndView modelAndView = new ModelAndView("cadastro/telefones");
         modelAndView.addObject("pessoaobj", pessoa.get());
+        modelAndView.addObject("telefones", telefoneRepository.getTelefones(idpessoa)); //lista os telefones ao entrar na pagina
         return modelAndView;
 
     }
@@ -103,6 +104,7 @@ public class PessoaController {
 
         ModelAndView modelAndView = new ModelAndView("cadastro/telefones");
         modelAndView.addObject("pessoaobj", pessoa);
+        modelAndView.addObject("telefones", telefoneRepository.getTelefones(pessoaid)); //telefones -> conexao com o thymeleaf
         return modelAndView;
     }
 

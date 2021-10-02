@@ -15,6 +15,24 @@ public class PessoaModel implements Serializable {
     private String nome;
     private String sobrenome;
     private int idade;
+
+    public String getQuaquer() {
+        return quaquer;
+    }
+
+    public void setQuaquer(String quaquer) {
+        this.quaquer = quaquer;
+    }
+
+    public List<TelefoneModel> getTelefones() {
+        return telefones;
+    }
+
+    public void setTelefones(List<TelefoneModel> telefones) {
+        this.telefones = telefones;
+    }
+
+    private String quaquer;
     //CRIANDO RELACIONAMENTO 1 PARA N
     @OneToMany(mappedBy = "pessoaModel")
     private List<TelefoneModel> telefones;

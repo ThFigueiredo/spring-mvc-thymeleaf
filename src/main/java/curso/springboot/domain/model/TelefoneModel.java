@@ -16,10 +16,9 @@ public class TelefoneModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private String numero;
-
     private String tipo;
+
     //CRIANDO RELACIONAMENTO 1 PARA N
     @ForeignKey(name="pessoa_id")
     @ManyToOne //muitos teledones pra uma pessoa
