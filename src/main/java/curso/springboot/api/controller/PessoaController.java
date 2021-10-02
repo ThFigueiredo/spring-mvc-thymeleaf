@@ -4,10 +4,7 @@ import curso.springboot.domain.model.PessoaModel;
 import curso.springboot.domain.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
@@ -33,7 +30,7 @@ public class PessoaController {
         ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
         Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
         andView.addObject("pessoas", pessoaIt);
-        andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio
+        andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio pois está retornnado pra mesma tela
 
         return andView;
     }
@@ -43,7 +40,7 @@ public class PessoaController {
         ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
         Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
         andView.addObject("pessoas", pessoaIt); //pessoas faz interação com thymeleaf
-        andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio
+        andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio pois está retornnado pra mesma tela
 
         return andView;
     }
@@ -69,6 +66,15 @@ public class PessoaController {
         modelAndView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio
 
         return modelAndView;
-
     }
+
+    @PostMapping("**/pesquisarpessoa")
+    public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa) {
+        ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
+        modelAndView.addObject("pessoas", pessoaRepository.findPessoaModelByName(nomepesquisa));
+        modelAndView.addObject("pessoaobj", new PessoaModel());
+        return modelAndView;
+    }
+
+
 }
