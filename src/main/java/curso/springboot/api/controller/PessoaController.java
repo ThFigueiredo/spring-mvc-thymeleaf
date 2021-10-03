@@ -39,12 +39,12 @@ public class PessoaController {
     //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
     @RequestMapping(method = RequestMethod.POST, value = "**/salvarpessoa") //** ignora o que vem antes na url
     public ModelAndView salvar(@Valid PessoaModel pessoaModel, BindingResult bindingResult) {
-
+        //VALIDAÇÃO
         if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
+            ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa"); //retonando para a tela cadastro pessoa
             Iterable<PessoaModel> pessoasIt = pessoaRepository.findAll();
             modelAndView.addObject("pessoas", pessoasIt);
-            modelAndView.addObject("pessoaobj", pessoaModel);
+            modelAndView.addObject("pessoaobj", pessoaModel); //retornando o objeto pessoa
 
             List<String> msg = new ArrayList<String>();
             for (ObjectError objectError : bindingResult.getAllErrors()) {
@@ -54,7 +54,7 @@ public class PessoaController {
             modelAndView.addObject("msg", msg);
             return modelAndView;
         }
-
+        //--VALIDAÇÃO
         pessoaRepository.save(pessoaModel);
 
         ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
