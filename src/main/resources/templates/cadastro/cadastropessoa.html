@@ -36,10 +36,12 @@
 <br/>
 <br/>
 
-<form action="pesquisarpessoa" method="post">
+<form action="pesquisarpessoa" method="post" id="pesquisarpessoa">
     <label>Pesquia por nome:</label>
     <input name="nomepesquisa">
     <input  class="waves-effect waves-light btn" type="submit" value="Buscar">
+    <input class="waves-effect waves-light btn" type="submit"
+           value="PDF" onclick="document.getElementById('pesquisarpessoa').method = 'get'">
 </form>
 
 <br/>

@@ -11,6 +11,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,15 @@ import java.util.Optional;
 
 @Controller
 public class PessoaController {
-
+    //void -> é quando nao tem retorno
     @Autowired //anotação autowired
     private PessoaRepository pessoaRepository;
 
     @Autowired
     private TelefoneRepository telefoneRepository;
+
+    @Autowired
+    private ReportUtilController reportUtilController;
 
     //SALVAR (MÉTODO DE REDIRECIONAMENTO)
     @RequestMapping(method = RequestMethod.GET, value = "/cadastropessoa")
@@ -117,6 +121,14 @@ public class PessoaController {
         modelAndView.addObject("pessoas", pessoaRepository.findPessoaModelByName(nomepesquisa));
         modelAndView.addObject("pessoaobj", new PessoaModel());
         return modelAndView;
+    }
+    //PDF
+    @GetMapping("**/pesquisarpessoa")
+    public void imprimePdf(@RequestParam("nomepesquisa") String nomepesquisa,
+                           HttpServletRequest request,
+                           HttpServletRequest response) {
+        System.out.println("sdssd");
+
     }
     //LISTAR TELEFONE
     @GetMapping("/telefones/{idpessoa}")
