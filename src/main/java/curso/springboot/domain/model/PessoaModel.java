@@ -1,6 +1,9 @@
 package curso.springboot.domain.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -10,10 +13,18 @@ public class PessoaModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) //gera chave automática no banco
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotNull(message="Nome não pode ser nulo")
+    @NotEmpty(message = "Nome não pode ser vazio")
     private String nome;
+
+    @NotNull(message = "Sobrenome não pode ser nulo")
+    @NotEmpty(message = "Sobrenome não pode ser vazio")
     private String sobrenome;
+
+    @Min(value = 18, message = "Idade inválida")
     private int idade;
 
     public String getQuaquer() {

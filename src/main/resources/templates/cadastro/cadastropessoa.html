@@ -9,6 +9,11 @@
     <link type="text/css" rel="stylesheet" href="/materialize/css/materialize.min.css"  media="screen,projection"/>
 </head>
 <body>
+<br/>
+<div th:each = "m : ${msg}">
+    <span th:text = "${m}"></span>
+</div>
+<br/>
 
 <form action="salvarpessoa" method="post" th:object="${pessoaobj}">
     <label>ID</label>

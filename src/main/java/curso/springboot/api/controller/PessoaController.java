@@ -6,9 +6,14 @@ import curso.springboot.domain.repository.PessoaRepository;
 import curso.springboot.domain.repository.TelefoneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,7 +38,23 @@ public class PessoaController {
     }
     //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
     @RequestMapping(method = RequestMethod.POST, value = "**/salvarpessoa") //** ignora o que vem antes na url
-    public ModelAndView salvar(PessoaModel pessoaModel) {
+    public ModelAndView salvar(@Valid PessoaModel pessoaModel, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
+            Iterable<PessoaModel> pessoasIt = pessoaRepository.findAll();
+            modelAndView.addObject("pessoas", pessoasIt);
+            modelAndView.addObject("pessoaobj", pessoaModel);
+
+            List<String> msg = new ArrayList<String>();
+            for (ObjectError objectError : bindingResult.getAllErrors()) {
+                msg.add(objectError.getDefaultMessage()); // vem das anotações @NotEmpty e outras
+            }
+
+            modelAndView.addObject("msg", msg);
+            return modelAndView;
+        }
+
         pessoaRepository.save(pessoaModel);
 
         ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
