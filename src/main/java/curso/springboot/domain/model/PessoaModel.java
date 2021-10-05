@@ -84,6 +84,8 @@ public class PessoaModel implements Serializable {
     private String uf;
     private String ibge;
 
+    private String sexopessoa;
+
 
     public String getQuaquer() {
         return quaquer;
@@ -135,5 +137,13 @@ public class PessoaModel implements Serializable {
     public void setIdade(int idade) { this.idade = idade; }
 
     public void add(PessoaModel pessoa) {
+    }
+
+    public String getSexopessoa() {
+        return sexopessoa;
+    }
+
+    public void setSexopessoa(String sexopessoa) {
+        this.sexopessoa = sexopessoa;
     }
 }
