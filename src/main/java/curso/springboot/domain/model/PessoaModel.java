@@ -75,4 +75,7 @@ public class PessoaModel implements Serializable {
     public int getIdade() { return idade; }
 
     public void setIdade(int idade) { this.idade = idade; }
+
+    public void add(PessoaModel pessoa) {
+    }
 }

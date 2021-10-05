@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,8 +127,31 @@ public class PessoaController {
     @GetMapping("**/pesquisarpessoa")
     public void imprimePdf(@RequestParam("nomepesquisa") String nomepesquisa,
                            HttpServletRequest request,
-                           HttpServletRequest response) {
-        System.out.println("sdssd");
+                           HttpServletResponse response) throws Exception {
+
+        List<PessoaModel> pessoas = new ArrayList<PessoaModel>();
+
+        Iterable<PessoaModel> iterator = pessoaRepository.findAll();
+        for (PessoaModel pessoa : iterator) {
+            pessoas.add(pessoa);
+        }
+
+        /*Chame o serviço que faz a geração do relatorio*/
+        byte[] pdf = reportUtilController.gerarRelatorio(pessoas, "pessoa", request.getServletContext()); //pessoa é o nome do relatorio jasper
+
+        /*Tamanho da resposta*/
+        response.setContentLength(pdf.length);
+
+        /*Definir na resposta o tipo de arquivo*/
+        response.setContentType("application/octet-stream");
+
+        /*Definir o cabeçalho da resposta*/
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"%s\"", "relatorio.pdf");
+        response.setHeader(headerKey, headerValue);
+
+        /*Finaliza a resposta pro navegador*/
+        response.getOutputStream().write(pdf);
 
     }
     //LISTAR TELEFONE
