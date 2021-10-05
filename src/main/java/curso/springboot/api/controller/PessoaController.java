@@ -44,6 +44,9 @@ public class PessoaController {
     //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
     @RequestMapping(method = RequestMethod.POST, value = "**/salvarpessoa") //** ignora o que vem antes na url
     public ModelAndView salvar(@Valid PessoaModel pessoaModel, BindingResult bindingResult) {
+
+        pessoaModel.setTelefones(telefoneRepository.getTelefones(pessoaModel.getId()));
+
         //VALIDAÇÃO
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa"); //retonando para a tela cadastro pessoa
@@ -81,6 +84,8 @@ public class PessoaController {
     //EDITAR
     @GetMapping("/editarpessoa/{idpessoa}") //GetMapping subistitui o @RequestMapping acima
     public ModelAndView editar(@PathVariable("idpessoa") Long idpessoa) {//idpessoas faz interação com thymeleaf
+
+
 
         Optional<PessoaModel> pessoaModel = pessoaRepository.findById(idpessoa); //instanciando o objeto pessoa
 
