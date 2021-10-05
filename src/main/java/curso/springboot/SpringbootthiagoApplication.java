@@ -22,7 +22,7 @@ public class SpringbootthiagoApplication implements WebMvcConfigurer {
 	}
 
 	//@Override
-	public void addViewConrollers(ViewControllerRegistry registry) {
+	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("/login").setViewName("/login");
 		registry.setOrder(Ordered.LOWEST_PRECEDENCE);
 	}
