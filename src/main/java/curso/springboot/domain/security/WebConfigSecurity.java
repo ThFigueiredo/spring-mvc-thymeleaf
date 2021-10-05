@@ -14,7 +14,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
-public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
+public class WebConfigSecurity  extends WebSecurityConfigurerAdapter{
 
     @Autowired
     private ImplementacaoUserDetailsService implementacaoUserDetailsService;
@@ -23,18 +23,16 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
                 .disable() // Desativa as configurações padrão de memória.
-                .authorizeRequests() // Pertimir restringir acessos
+                .authorizeRequests() // Pertimi restringir acessos
                 .antMatchers(HttpMethod.GET, "/").permitAll() // Qualquer usuário acessa a pagina inicial
+                .antMatchers(HttpMethod.GET, "/cadastropessoa").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().formLogin().permitAll() // permite qualquer usuário
-                //.loginPage("/login") //página de login
-                .defaultSuccessUrl("/cadastropessoa") //se logar entra nesta página
-                .failureUrl("/login?error=true")// se falhar
-                .and().logout().logoutSuccessUrl("/login") // Mapeia URL de Logout e invalida usuário autenticado
-                //.logoutSuccessUrl("/login") -> se fizer o logout vai pra ela de login
+                .and().logout() // Mapeia URL de Logout e invalida usuário autenticado
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 
     }
+
     //senha 123 = $2a$12$LdFdLa21NImoKlcv8Lx/nu7GSqhvsDF/PzwICJ5QsssInJXQW1o9a
 
     @Override // Cria autenticação do usuário com banco de dados ou em memória

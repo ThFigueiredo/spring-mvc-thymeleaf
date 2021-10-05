@@ -5,11 +5,9 @@ package curso.springboot.domain.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 
 @Entity
@@ -23,6 +21,18 @@ public class UsuarioModel implements UserDetails {
 
 	private String login;
 	private String senha;
+
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "usuarios_role",
+			joinColumns = @JoinColumn(name = "usuario_id",
+					referencedColumnName = "id",
+					table = "usuario"),  // cria tabela de acesso do usuário
+
+			inverseJoinColumns = @JoinColumn(name="role_id",
+					referencedColumnName = "id",
+					table = "role"))
+
+	private List<RoleModel> roles;
 
 	public Long getId() {
 		return id;
@@ -50,7 +60,7 @@ public class UsuarioModel implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return roles;
 	}
 
 	@Override
