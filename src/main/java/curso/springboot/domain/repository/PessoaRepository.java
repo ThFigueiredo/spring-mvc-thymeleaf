@@ -17,4 +17,7 @@ public interface PessoaRepository extends JpaRepository<PessoaModel, Long> {
     //@Query("select p from PessoaModel p where p.nome like %?1% and %?2%") -> passando mais de 1 parametro
     List<PessoaModel> findPessoaModelByName(String nome);
 
+    @Query("select p from PessoaModel p where p.nome like %?1% and p.sexopessoa = ?2")
+    List<PessoaModel> findPessoaModelByNameSexo(String nome, String sexopessoa);
+
 }
