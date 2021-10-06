@@ -73,7 +73,7 @@ public class PessoaController {
         return andView;
     }
     //LISTAR
-    @RequestMapping(method = RequestMethod.GET, value = "/listarpessoas")
+    @RequestMapping(method = RequestMethod.GET, value = "/listapessoas")
     public ModelAndView pessoas() {
         ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
         Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
@@ -142,18 +142,37 @@ public class PessoaController {
     //PDF
     @GetMapping("**/pesquisarpessoa")
     public void imprimePdf(@RequestParam("nomepesquisa") String nomepesquisa,
+                           @RequestParam("pesqsexo") String pesqsexo,
                            HttpServletRequest request,
                            HttpServletResponse response) throws Exception {
 
         List<PessoaModel> pessoas = new ArrayList<PessoaModel>();
 
-        Iterable<PessoaModel> iterator = pessoaRepository.findAll();
-        for (PessoaModel pessoa : iterator) {
-            pessoas.add(pessoa);
+        if (pesqsexo != null && !pesqsexo.isEmpty()
+                && nomepesquisa != null && !nomepesquisa.isEmpty()) {/*Busca por nome e sexo*/
+
+            pessoas = pessoaRepository.findPessoaModelByNameSexo(nomepesquisa, pesqsexo);
+
+        }else if (nomepesquisa != null && !nomepesquisa.isEmpty()) {/*Busca somente por nome*/
+
+            pessoas = pessoaRepository.findPessoaModelByName(nomepesquisa);
+
+        }
+        else if (pesqsexo != null && !pesqsexo.isEmpty()) {/*Busca somente por sexo*/
+
+            pessoas = pessoaRepository.findPessoaBySexo(pesqsexo);
+
+        }
+        else {/*Busca todos*/
+
+            Iterable<PessoaModel> iterator = pessoaRepository.findAll();
+            for (PessoaModel pessoa : iterator) {
+                pessoas.add(pessoa);
+            }
         }
 
         /*Chame o serviço que faz a geração do relatorio*/
-        byte[] pdf = reportUtilController.gerarRelatorio(pessoas, "pessoa", request.getServletContext()); //pessoa é o nome do relatorio jasper
+        byte[] pdf = ReportUtilController.gerarRelatorio(pessoas, "pessoa", request.getServletContext());
 
         /*Tamanho da resposta*/
         response.setContentLength(pdf.length);
