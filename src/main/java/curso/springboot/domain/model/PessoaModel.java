@@ -1,10 +1,13 @@
 package curso.springboot.domain.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Entity //faz o hibernate identificar e criar tabela no banco
@@ -50,6 +53,19 @@ public class PessoaModel implements Serializable {
     public void setCargoModel(CargoModel cargoModel) {
         this.cargoModel = cargoModel;
     }
+
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
+    private Date dataNascimento;
+
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
+    }
+
 
     public ProfissaoModel getProfissaoModel() {
         return profissaoModel;
