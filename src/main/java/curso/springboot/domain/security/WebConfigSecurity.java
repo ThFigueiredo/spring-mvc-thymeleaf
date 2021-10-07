@@ -21,19 +21,19 @@ public class WebConfigSecurity  extends WebSecurityConfigurerAdapter{
 
     @Override // Configura as solicitações de acesso por Http
     protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf()
-//                .disable() // Desativa as configurações padrão de memória.
-//                .authorizeRequests() // Pertimi restringir acessos
-//                .antMatchers(HttpMethod.GET, "/").permitAll() // Qualquer usuário acessa a pagina inicial
-//                .antMatchers(HttpMethod.GET, "/cadastropessoa").hasAnyRole("ADMIN")
-//                .anyRequest().authenticated()
-//                .and().formLogin().permitAll() // permite qualquer usuário
-//                .loginPage("/login")
-//                .defaultSuccessUrl("/cadastropessoa")
-//                .failureUrl("/login?error=true")
-//                .and().logout().logoutSuccessUrl("/login") // Mapeia URL de Logout e invalida usuário autenticado
-//                //.logoutSuccessUrl("/login") -> quando delogar vai pra página de login novamente
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
+        http.csrf()
+                .disable() // Desativa as configurações padrão de memória.
+                .authorizeRequests() // Pertimi restringir acessos
+                .antMatchers(HttpMethod.GET, "/").permitAll() // Qualquer usuário acessa a pagina inicial
+                .antMatchers(HttpMethod.GET, "/cadastropessoa").hasAnyRole("ADMIN")
+                .anyRequest().authenticated()
+                .and().formLogin().permitAll() // permite qualquer usuário
+                .loginPage("/login")
+                .defaultSuccessUrl("/cadastropessoa")
+                .failureUrl("/login?error=true")
+                .and().logout().logoutSuccessUrl("/login") // Mapeia URL de Logout e invalida usuário autenticado
+                //.logoutSuccessUrl("/login") -> quando delogar vai pra página de login novamente
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
 
     }
 

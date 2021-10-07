@@ -40,6 +40,17 @@ public class PessoaModel implements Serializable {
     @ManyToOne //muitas pessoas para uma profissão
     private ProfissaoModel profissaoModel; //criando pbjeto profissão
 
+    @Enumerated(EnumType.STRING)
+    private CargoModel cargoModel;
+
+    public CargoModel getCargoModel() {
+        return cargoModel;
+    }
+
+    public void setCargoModel(CargoModel cargoModel) {
+        this.cargoModel = cargoModel;
+    }
+
     public ProfissaoModel getProfissaoModel() {
         return profissaoModel;
     }

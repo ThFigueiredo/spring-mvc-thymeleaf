@@ -88,6 +88,16 @@
                     </select>
                 </div>
 
+                <div class="row">
+                    <div class="input-field col s6">
+                        <label for="cargo" class="active">Cargo</label>
+                        <select class="browser-default" th:field="*{cargoModel}" id="cargo">
+                            <option th:each = "c : ${T(curso.springboot.domain.model.CargoModel).values()}"
+                                    th:value="${c.valor}" th:text="${c.nome}">
+                        </select>
+                    </div>
+                </div>
+
             </div>
 
 
