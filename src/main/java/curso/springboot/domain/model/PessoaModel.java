@@ -58,6 +58,18 @@ public class PessoaModel implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dataNascimento;
 
+    @Lob
+    private byte[] curriculo;
+
+
+    public void setCurriculo(byte[] curriculo) {
+        this.curriculo = curriculo;
+    }
+
+    public byte[] getCurriculo() {
+        return curriculo;
+    }
+
     public void setDataNascimento(Date dataNascimento) {
         this.dataNascimento = dataNascimento;
     }

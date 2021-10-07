@@ -10,11 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +47,10 @@ public class PessoaController {
         return modelAndView;
     }
     //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
-    @RequestMapping(method = RequestMethod.POST, value = "**/salvarpessoa") //** ignora o que vem antes na url
-    public ModelAndView salvar(@Valid PessoaModel pessoaModel, BindingResult bindingResult) {
+    @RequestMapping(method = RequestMethod.POST,
+            value = "**/salvarpessoa", consumes = {"multipart/form-data"}) //** ignora o que vem antes na url
+    public ModelAndView salvar(@Valid PessoaModel pessoaModel,
+                               BindingResult bindingResult, final MultipartFile file) throws IOException {
 
         pessoaModel.setTelefones(telefoneRepository.getTelefones(pessoaModel.getId()));
 
@@ -66,6 +70,17 @@ public class PessoaController {
             modelAndView.addObject("profissoes", profissaoRepository.findAll());
             return modelAndView;
         }
+
+        if (file.getSize() > 0) { /*Cadastrando um curriculo*/
+            pessoaModel.setCurriculo(file.getBytes());
+        }else {
+            if (pessoaModel.getId() != null && pessoaModel.getId() > 0) {// editando // verifica se pessoa já está cadastrada no banco
+                byte[] curriculoTempo = pessoaRepository.
+                        findById(pessoaModel.getId()).get().getCurriculo();
+                pessoaModel.setCurriculo((curriculoTempo));
+            }
+        }
+
         //--VALIDAÇÃO
         pessoaRepository.save(pessoaModel);
 
