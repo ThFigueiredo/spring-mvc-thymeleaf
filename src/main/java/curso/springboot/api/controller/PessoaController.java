@@ -3,6 +3,7 @@ package curso.springboot.api.controller;
 import curso.springboot.domain.model.PessoaModel;
 import curso.springboot.domain.model.TelefoneModel;
 import curso.springboot.domain.repository.PessoaRepository;
+import curso.springboot.domain.repository.ProfissaoRepository;
 import curso.springboot.domain.repository.TelefoneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,15 +31,17 @@ public class PessoaController {
     @Autowired
     private ReportUtilController reportUtilController;
 
+    @Autowired
+    private ProfissaoRepository profissaoRepository;
+
     //SALVAR (MÉTODO DE REDIRECIONAMENTO)
     @RequestMapping(method = RequestMethod.GET, value = "/cadastropessoa")
     public ModelAndView inicio() { //início = nome do método
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
         modelAndView.addObject("pessoaobj", new PessoaModel());
-
-
         Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
         modelAndView.addObject("pessoas", pessoaIt); //pessoas faz interação com thymeleaf
+        modelAndView.addObject("profissoes", profissaoRepository.findAll());
         return modelAndView;
     }
     //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
@@ -60,6 +63,7 @@ public class PessoaController {
             }
 
             modelAndView.addObject("msg", msg);
+            modelAndView.addObject("profissoes", profissaoRepository.findAll());
             return modelAndView;
         }
         //--VALIDAÇÃO
@@ -91,6 +95,7 @@ public class PessoaController {
 
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa"); //retornando pra tela de cadastro
         modelAndView.addObject("pessoaobj", pessoaModel.get()); //retornando pra tela de cadastro
+        modelAndView.addObject("profissoes", profissaoRepository.findAll());
         return modelAndView;
 
     }

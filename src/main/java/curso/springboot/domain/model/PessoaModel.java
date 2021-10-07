@@ -30,6 +30,23 @@ public class PessoaModel implements Serializable {
 
     private String cep;
     private String rua;
+    private String bairro;
+    private String cidade;
+    private String uf;
+    private String ibge;
+
+    private String sexopessoa;
+
+    @ManyToOne //muitas pessoas para uma profissão
+    private ProfissaoModel profissaoModel; //criando pbjeto profissão
+
+    public ProfissaoModel getProfissaoModel() {
+        return profissaoModel;
+    }
+
+    public void setProfissaoModel(ProfissaoModel profissaoModel) {
+        this.profissaoModel = profissaoModel;
+    }
 
     public String getCep() {
         return cep;
@@ -78,13 +95,6 @@ public class PessoaModel implements Serializable {
     public void setIbge(String ibge) {
         this.ibge = ibge;
     }
-
-    private String bairro;
-    private String cidade;
-    private String uf;
-    private String ibge;
-
-    private String sexopessoa;
 
 
     public String getQuaquer() {
