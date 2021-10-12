@@ -30,8 +30,7 @@ public class PessoaController {
     @Autowired
     private TelefoneRepository telefoneRepository;
 
-    @Autowired
-    private ReportUtilController reportUtilController;
+
 
     @Autowired
     private ProfissaoRepository profissaoRepository;
