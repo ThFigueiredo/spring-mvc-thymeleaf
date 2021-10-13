@@ -5,7 +5,10 @@ import curso.springboot.domain.model.TelefoneModel;
 import curso.springboot.domain.repository.PessoaRepository;
 import curso.springboot.domain.repository.ProfissaoRepository;
 import curso.springboot.domain.repository.TelefoneRepository;
+import curso.springboot.domain.service.PessoaService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -30,7 +33,8 @@ public class PessoaController {
     @Autowired
     private TelefoneRepository telefoneRepository;
 
-
+    @Autowired
+    private PessoaService pessoaService;
 
     @Autowired
     private ProfissaoRepository profissaoRepository;
@@ -41,7 +45,7 @@ public class PessoaController {
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
         modelAndView.addObject("pessoaobj", new PessoaModel());
         Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
-        modelAndView.addObject("pessoas", pessoaIt); //pessoas faz interação com thymeleaf
+        modelAndView.addObject("pessoas", pessoaIt);
         modelAndView.addObject("profissoes", profissaoRepository.findAll());
         return modelAndView;
     }
@@ -92,9 +96,9 @@ public class PessoaController {
     }
     //LISTAR
     @RequestMapping(method = RequestMethod.GET, value = "/listapessoas")
-    public ModelAndView pessoas() {
-        ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
-        Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
+    public ModelAndView pessoas(Pageable pageable) {
+        ModelAndView andView = new ModelAndView("cadastro/listar");
+        Iterable<PessoaModel> pessoaIt = pessoaService.findAll(pageable);
         andView.addObject("pessoas", pessoaIt); //pessoas faz interação com thymeleaf
         andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio pois está retornnado pra mesma tela
         return andView;
@@ -115,14 +119,9 @@ public class PessoaController {
     }
     //EXCLUIR
     @GetMapping("/removerpessoa/{idpessoa}")
-    public ModelAndView excluir(@PathVariable("idpessoa") Long idpessoa) {
-
-        pessoaRepository.deleteById(idpessoa);
-
-        ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
-        modelAndView.addObject("pessoas", pessoaRepository.findAll());
-        modelAndView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio
-
+    public ModelAndView excluir(@PathVariable("idpessoa") Long idpessoa) throws NotFoundException {
+        pessoaService.delete(idpessoa);
+        ModelAndView modelAndView = new ModelAndView("redirect:/listapessoas");
         return modelAndView;
     }
     //EXCLUIR TELEFONE

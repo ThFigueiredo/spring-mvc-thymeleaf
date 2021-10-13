@@ -57,8 +57,8 @@ public class PessoaServiceImpl implements PessoaService {
 
     @Override
     public void delete(Long id) throws NotFoundException {
-        PessoaModel exampleModel = findById(id);
-        repository.delete(exampleModel);
+        PessoaModel pessoaModel = findById(id);
+        repository.delete(pessoaModel);
     }
 
     //PAGINAÇÃO
