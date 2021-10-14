@@ -33,7 +33,7 @@
 <nav class="navbar navbar-expand-lg fixed-top navbar-primary bg-light shadow-sm p-3 mb-5 bg-white rounded"
      aria-label="Main navigation">
     <div class="container-fluid">
-<!--        <img class="me-3" src="/img/fab.jpg" alt="" width="50" height="30">-->
+        <!--        <img class="me-3" src="/img/fab.jpg" alt="" width="50" height="30">-->
         <img class="me-3" th:src="@{/img/fab.jpg}" alt="" width="50" height="30">
         <span class="navbar-brand" href="#">JAVA WEB - FAB</span>
         <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
@@ -63,20 +63,30 @@
                 <p class="fs-5">LISTA DE PESSOAS</p>
             </div>
         </div>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <form action="pesquisarpessoa" method="post" id="pesquisarpessoa">
-                <label>Pesquia por nome:</label>
-                <input name="nomepesquisa">
-                <input  class="waves-effect waves-light btn" type="submit" value="Buscar">
-                <input class="waves-effect waves-light btn" type="submit"
+
+        <form action="pesquisarpessoa" method="post" class="col s12" id="pesquisarpessoa">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <div class="input-field col s6">
+                    <label for="pesqsexo" class="active">Pesquisa Sexo</label>
+                    <select class="browser-default" name="pesqsexo" id="pesqsexo">
+                        <option value="">--[Todos]--</option>
+                        <option value="MASCULINO" th:text="Masculino"/>
+                        <option value="FEMININO" th:text="Feminino"/>
+                    </select>
+
+                    <label for="nomepesquisa" class="active">Pesquia por nome:</label>
+                    <input name="nomepesquisa" id="nomepesquisa" class="validate">
+                    <input class="" type="submit" value="Buscar">
+                </div>
+                <input class="btn btn-primary btn-sm mb-3" type="submit"
                        value="PDF" onclick="document.getElementById('pesquisarpessoa').method = 'get'">
-            </form>
-            <a th:href="@{/cadastropessoa}" class="btn btn-primary btn-sm mb-3"> Novo </a>
-            <a th:href="@{/exemplo/cadastrar}" class="btn btn-primary btn-sm mb-3"> PDF </a>
-            <!--            <button class="btn btn-primary me-md-2" type="button">Novo</button>-->
-            <!--            <button class="btn btn-primary" type="button">Relarório</button>-->
-            <!--    <button class="btn btn-primary" type="button">PDF</button>-->
-        </div>
+
+                <a th:href="@{/cadastropessoa}" class="btn btn-primary btn-sm mb-3"> Novo </a>
+                <!--            <button class="btn btn-primary me-md-2" type="button">Novo</button>-->
+                <!--            <button class="btn btn-primary" type="button">Relarório</button>-->
+                <!--    <button class="btn btn-primary" type="button">PDF</button>-->
+            </div>
+        </form>
         <table class="table">
             <thead class="table-dark">
             <tr>
@@ -91,44 +101,45 @@
             <tbody>
             <tr th:each="li : ${pessoas}">
                 <td th:text="${li.id}"></td>
-                <td><a th:href="@{/exemplo/detalhes/{idpessoa}(idpessoa=${li.id})}"><span th:text = "${li.nome}"></span></a></td>
+                <td><a th:href="@{/exemplo/detalhes/{idpessoa}(idpessoa=${li.id})}"><span
+                        th:text="${li.nome}"></span></a></td>
                 <td th:text="${li.sobrenome}"></td>
                 <td th:text="${li.idade}"></td>
                 <td><a th:href="@{'/editarpessoa/' + ${li.id}}"><span class="material-icons">edit</span></a></td>
                 <td><a th:href="@{'/removerpessoa/' + ${li.id}}"><span class="material-icons">delete</span></a></td>
-<!--                <td><a th:href="@{/editarpessoa/{idpessoa}(idpessoa=${li.id})}">Editar</a></td>-->
-<!--                <td><a th:href="@{/removerpessoa/{idpessoa}(idpessoa=${li.id})}">Excluir</a></td>-->
+                <!--                <td><a th:href="@{/editarpessoa/{idpessoa}(idpessoa=${li.id})}">Editar</a></td>-->
+                <!--                <td><a th:href="@{/removerpessoa/{idpessoa}(idpessoa=${li.id})}">Excluir</a></td>-->
             </tr>
             </tbody>
         </table>
 
 
-<!--        <div th:if="${totalPages > 1}">-->
-<!--            <nav aria-label="Page navigation example">-->
-<!--                <div class="row col-sm-10">-->
-<!--                    <div class="col-sm-3">-->
-<!--                        Total de Linhas: [[${totalItems}]]-->
-<!--                    </div>-->
+        <!--        <div th:if="${totalPages > 1}">-->
+        <!--            <nav aria-label="Page navigation example">-->
+        <!--                <div class="row col-sm-10">-->
+        <!--                    <div class="col-sm-3">-->
+        <!--                        Total de Linhas: [[${totalItems}]]-->
+        <!--                    </div>-->
 
-<!--                    <ul class="pagination">-->
-<!--                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>-->
-<!--                        <span th:each="i: ${#numbers.sequence(1, totalPages)}">-->
-<!--                                <li class="page-item">-->
-<!--                                    <a class="page-link" th:if="${currentPage != i}" th:href="@{'/exemplo/page/' +-->
-<!--                                        ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>-->
-<!--                                    <span class="page-link" th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;-->
-<!--                                </li>-->
-<!--                            </span>-->
-<!--                        <li class="page-item">-->
-<!--                            <a class="page-link" th:if="${currentPage < totalPages}"-->
-<!--                               th:href="@{'/exemplo/page/' + ${currentPage + 1}+ '?sortField=' +-->
-<!--                                   ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>-->
-<!--                            <span class="page-link" th:unless="${currentPage < totalPages}">Next</span>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--            </nav>-->
-<!--        </div>-->
+        <!--                    <ul class="pagination">-->
+        <!--                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>-->
+        <!--                        <span th:each="i: ${#numbers.sequence(1, totalPages)}">-->
+        <!--                                <li class="page-item">-->
+        <!--                                    <a class="page-link" th:if="${currentPage != i}" th:href="@{'/exemplo/page/' +-->
+        <!--                                        ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>-->
+        <!--                                    <span class="page-link" th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;-->
+        <!--                                </li>-->
+        <!--                            </span>-->
+        <!--                        <li class="page-item">-->
+        <!--                            <a class="page-link" th:if="${currentPage < totalPages}"-->
+        <!--                               th:href="@{'/exemplo/page/' + ${currentPage + 1}+ '?sortField=' +-->
+        <!--                                   ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>-->
+        <!--                            <span class="page-link" th:unless="${currentPage < totalPages}">Next</span>-->
+        <!--                        </li>-->
+        <!--                    </ul>-->
+        <!--                </div>-->
+        <!--            </nav>-->
+        <!--        </div>-->
     </div>
 
 </main>

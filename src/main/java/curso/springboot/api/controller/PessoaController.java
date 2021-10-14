@@ -106,16 +106,11 @@ public class PessoaController {
     //EDITAR
     @GetMapping("/editarpessoa/{idpessoa}") //GetMapping subistitui o @RequestMapping acima
     public ModelAndView editar(@PathVariable("idpessoa") Long idpessoa) {//idpessoas faz interação com thymeleaf
-
-
-
         Optional<PessoaModel> pessoaModel = pessoaRepository.findById(idpessoa); //instanciando o objeto pessoa
-
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa"); //retornando pra tela de cadastro
         modelAndView.addObject("pessoaobj", pessoaModel.get()); //retornando pra tela de cadastro
         modelAndView.addObject("profissoes", profissaoRepository.findAll());
         return modelAndView;
-
     }
     //EXCLUIR
     @GetMapping("/removerpessoa/{idpessoa}")
@@ -151,7 +146,7 @@ public class PessoaController {
             pessoas = pessoaRepository.findPessoaModelByName(nomepesquisa);
         }
 
-        ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
+        ModelAndView modelAndView = new ModelAndView("cadastro/listar");
         modelAndView.addObject("pessoas", pessoas);
         modelAndView.addObject("pessoaobj", new PessoaModel());
         return modelAndView;
