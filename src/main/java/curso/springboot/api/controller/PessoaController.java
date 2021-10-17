@@ -40,18 +40,15 @@ public class PessoaController {
     private ProfissaoRepository profissaoRepository;
 
     //SALVAR (MÉTODO DE REDIRECIONAMENTO)
-    @RequestMapping(method = RequestMethod.GET, value = "/cadastropessoa")
-    public ModelAndView inicio() { //início = nome do método
+    @GetMapping("/cadpessoa")
+    public ModelAndView index2() {
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
         modelAndView.addObject("pessoaobj", new PessoaModel());
-        Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
-        modelAndView.addObject("pessoas", pessoaIt);
-        modelAndView.addObject("profissoes", profissaoRepository.findAll());
         return modelAndView;
     }
+
     //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
-    @RequestMapping(method = RequestMethod.POST,
-            value = "**/salvarpessoa", consumes = {"multipart/form-data"}) //** ignora o que vem antes na url
+    @PostMapping("/salvarpessoa")
     public ModelAndView salvar(@Valid PessoaModel pessoaModel,
                                BindingResult bindingResult, final MultipartFile file) throws IOException {
 
@@ -59,7 +56,7 @@ public class PessoaController {
 
         //VALIDAÇÃO
         if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa"); //retonando para a tela cadastro pessoa
+            ModelAndView modelAndView = new ModelAndView("cadastro/listar"); //retonando para a tela cadastro pessoa
             Iterable<PessoaModel> pessoasIt = pessoaRepository.findAll();
             modelAndView.addObject("pessoas", pessoasIt);
             modelAndView.addObject("pessoaobj", pessoaModel); //retornando o objeto pessoa
@@ -76,7 +73,7 @@ public class PessoaController {
 
         if (file.getSize() > 0) { /*Cadastrando um curriculo*/
             pessoaModel.setCurriculo(file.getBytes());
-        }else {
+        } else {
             if (pessoaModel.getId() != null && pessoaModel.getId() > 0) {// editando // verifica se pessoa já está cadastrada no banco
                 byte[] curriculoTempo = pessoaRepository.
                         findById(pessoaModel.getId()).get().getCurriculo();
@@ -87,13 +84,14 @@ public class PessoaController {
         //--VALIDAÇÃO
         pessoaRepository.save(pessoaModel);
 
-        ModelAndView andView = new ModelAndView("cadastro/cadastropessoa");
+        ModelAndView andView = new ModelAndView("cadastro/listar");
         Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
         andView.addObject("pessoas", pessoaIt);
         andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio pois está retornnado pra mesma tela
 
         return andView;
     }
+
     //LISTAR
     @RequestMapping(method = RequestMethod.GET, value = "/listapessoas")
     public ModelAndView pessoas(Pageable pageable) {
@@ -103,6 +101,7 @@ public class PessoaController {
         andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio pois está retornnado pra mesma tela
         return andView;
     }
+
     //EDITAR
     @GetMapping("/editarpessoa/{idpessoa}") //GetMapping subistitui o @RequestMapping acima
     public ModelAndView editar(@PathVariable("idpessoa") Long idpessoa) {//idpessoas faz interação com thymeleaf
@@ -112,6 +111,7 @@ public class PessoaController {
         modelAndView.addObject("profissoes", profissaoRepository.findAll());
         return modelAndView;
     }
+
     //EXCLUIR
     @GetMapping("/removerpessoa/{idpessoa}")
     public ModelAndView excluir(@PathVariable("idpessoa") Long idpessoa) throws NotFoundException {
@@ -119,6 +119,7 @@ public class PessoaController {
         ModelAndView modelAndView = new ModelAndView("redirect:/listapessoas");
         return modelAndView;
     }
+
     //EXCLUIR TELEFONE
     @GetMapping("/removertelefone/{idtelefone}")
     public ModelAndView removertelefone(@PathVariable("idtelefone") Long idtelefone) {
@@ -133,6 +134,7 @@ public class PessoaController {
 
         return modelAndView;
     }
+
     //FAZENDO A PESQUISA POR NOME
     @PostMapping("**/pesquisarpessoa")
     public ModelAndView pesquisar(@RequestParam("nomepesquisa") String nomepesquisa,
@@ -166,17 +168,15 @@ public class PessoaController {
 
             pessoas = pessoaRepository.findPessoaModelByNameSexo(nomepesquisa, pesqsexo);
 
-        }else if (nomepesquisa != null && !nomepesquisa.isEmpty()) {/*Busca somente por nome*/
+        } else if (nomepesquisa != null && !nomepesquisa.isEmpty()) {/*Busca somente por nome*/
 
             pessoas = pessoaRepository.findPessoaModelByName(nomepesquisa);
 
-        }
-        else if (pesqsexo != null && !pesqsexo.isEmpty()) {/*Busca somente por sexo*/
+        } else if (pesqsexo != null && !pesqsexo.isEmpty()) {/*Busca somente por sexo*/
 
             pessoas = pessoaRepository.findPessoaBySexo(pesqsexo);
 
-        }
-        else {/*Busca todos*/
+        } else {/*Busca todos*/
 
             Iterable<PessoaModel> iterator = pessoaRepository.findAll();
             for (PessoaModel pessoa : iterator) {
@@ -202,6 +202,7 @@ public class PessoaController {
         response.getOutputStream().write(pdf);
 
     }
+
     //LISTAR TELEFONE
     @GetMapping("/telefones/{idpessoa}")
     public ModelAndView telefones(@PathVariable("idpessoa") Long idpessoa) {
@@ -214,6 +215,7 @@ public class PessoaController {
         return modelAndView;
 
     }
+
     //CADASTRO TELEFONES PARA UMA PESSOA
     @PostMapping("**/addfonePessoa/{pessoaid}")
     public ModelAndView addFonePessoa(TelefoneModel telefoneModel,
