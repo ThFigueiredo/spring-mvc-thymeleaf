@@ -54,22 +54,22 @@ public class PessoaController {
 
         pessoaModel.setTelefones(telefoneRepository.getTelefones(pessoaModel.getId()));
 
-        //VALIDAÇÃO
-        if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = new ModelAndView("cadastro/listar"); //retonando para a tela cadastro pessoa
-            Iterable<PessoaModel> pessoasIt = pessoaRepository.findAll();
-            modelAndView.addObject("pessoas", pessoasIt);
-            modelAndView.addObject("pessoaobj", pessoaModel); //retornando o objeto pessoa
-
-            List<String> msg = new ArrayList<String>();
-            for (ObjectError objectError : bindingResult.getAllErrors()) {
-                msg.add(objectError.getDefaultMessage()); // vem das anotações @NotEmpty e outras
-            }
-
-            modelAndView.addObject("msg", msg);
-            modelAndView.addObject("profissoes", profissaoRepository.findAll());
-            return modelAndView;
-        }
+//        //VALIDAÇÃO
+//        if (bindingResult.hasErrors()) {
+//            ModelAndView modelAndView = new ModelAndView("cadastro/listar"); //retonando para a tela cadastro pessoa
+//            Iterable<PessoaModel> pessoasIt = pessoaRepository.findAll();
+//            modelAndView.addObject("pessoas", pessoasIt);
+//            modelAndView.addObject("pessoaobj", pessoaModel); //retornando o objeto pessoa
+//
+//            List<String> msg = new ArrayList<String>();
+//            for (ObjectError objectError : bindingResult.getAllErrors()) {
+//                msg.add(objectError.getDefaultMessage()); // vem das anotações @NotEmpty e outras
+//            }
+//
+//            modelAndView.addObject("msg", msg);
+//            modelAndView.addObject("profissoes", profissaoRepository.findAll());
+//            return modelAndView;
+//        }
 
         if (file.getSize() > 0) { /*Cadastrando um curriculo*/
             pessoaModel.setCurriculo(file.getBytes());
