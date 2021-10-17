@@ -39,57 +39,53 @@ public class PessoaController {
     @Autowired
     private ProfissaoRepository profissaoRepository;
 
-    //SALVAR (MÉTODO DE REDIRECIONAMENTO)
+    //SALVAR (MÉTODO DE REDIRECIONAMENTO) (carrega os dados para a salvar. Após clicar no submit do form, será direcionado o método salvar)
     @GetMapping("/cadpessoa")
     public ModelAndView index2() {
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
         modelAndView.addObject("pessoaobj", new PessoaModel());
+        modelAndView.addObject("profissoes", profissaoRepository.findAll());
         return modelAndView;
     }
 
-    //SALVAR (SALVA E CARREGA O LISTAR NA MESMA PÁGINA)
-    @PostMapping("/salvarpessoa")
+    //SALVAR
+    @PostMapping("**/salvarpessoa") //ignora o que vem antes -> serve para a ediçao
     public ModelAndView salvar(@Valid PessoaModel pessoaModel,
-                               BindingResult bindingResult, final MultipartFile file) throws IOException {
+                               BindingResult bindingResult, final MultipartFile file, Pageable pageable) throws IOException, NotFoundException {
 
         pessoaModel.setTelefones(telefoneRepository.getTelefones(pessoaModel.getId()));
 
-//        //VALIDAÇÃO
-//        if (bindingResult.hasErrors()) {
-//            ModelAndView modelAndView = new ModelAndView("cadastro/listar"); //retonando para a tela cadastro pessoa
-//            Iterable<PessoaModel> pessoasIt = pessoaRepository.findAll();
-//            modelAndView.addObject("pessoas", pessoasIt);
-//            modelAndView.addObject("pessoaobj", pessoaModel); //retornando o objeto pessoa
-//
-//            List<String> msg = new ArrayList<String>();
-//            for (ObjectError objectError : bindingResult.getAllErrors()) {
-//                msg.add(objectError.getDefaultMessage()); // vem das anotações @NotEmpty e outras
-//            }
-//
-//            modelAndView.addObject("msg", msg);
-//            modelAndView.addObject("profissoes", profissaoRepository.findAll());
-//            return modelAndView;
-//        }
+        //VALIDAÇÃO
+        if (bindingResult.hasErrors()) {
+            ModelAndView modelAndView = new ModelAndView("cadastro/listar"); //retonando para a tela cadastro pessoa
+            Iterable<PessoaModel> pessoasIt = pessoaService.findAll(pageable);
+            modelAndView.addObject("pessoas", pessoasIt);
+            modelAndView.addObject("pessoaobj", pessoaModel); //retornando o objeto pessoa
+
+            List<String> msg = new ArrayList<String>();
+            for (ObjectError objectError : bindingResult.getAllErrors()) {
+                msg.add(objectError.getDefaultMessage()); // vem das anotações @NotEmpty e outras
+            }
+
+            modelAndView.addObject("msg", msg);
+            modelAndView.addObject("profissoes", profissaoRepository.findAll());
+            return modelAndView;
+        }
 
         if (file.getSize() > 0) { /*Cadastrando um curriculo*/
             pessoaModel.setCurriculo(file.getBytes());
         } else {
             if (pessoaModel.getId() != null && pessoaModel.getId() > 0) {// editando // verifica se pessoa já está cadastrada no banco
-                byte[] curriculoTempo = pessoaRepository.
-                        findById(pessoaModel.getId()).get().getCurriculo();
+                byte[] curriculoTempo = pessoaService.
+                        findById(pessoaModel.getId()).getCurriculo();
                 pessoaModel.setCurriculo((curriculoTempo));
             }
         }
-
         //--VALIDAÇÃO
-        pessoaRepository.save(pessoaModel);
 
-        ModelAndView andView = new ModelAndView("cadastro/listar");
-        Iterable<PessoaModel> pessoaIt = pessoaRepository.findAll();
-        andView.addObject("pessoas", pessoaIt);
-        andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio pois está retornnado pra mesma tela
-
-        return andView;
+        pessoaService.create(pessoaModel);
+        ModelAndView modelAndView = new ModelAndView("redirect:/listapessoas");
+        return modelAndView;
     }
 
     //LISTAR
@@ -97,17 +93,16 @@ public class PessoaController {
     public ModelAndView pessoas(Pageable pageable) {
         ModelAndView andView = new ModelAndView("cadastro/listar");
         Iterable<PessoaModel> pessoaIt = pessoaService.findAll(pageable);
-        andView.addObject("pessoas", pessoaIt); //pessoas faz interação com thymeleaf
-        andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio pois está retornnado pra mesma tela
+        andView.addObject("pessoas", pessoaIt);
+        andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio
         return andView;
     }
-
-    //EDITAR
-    @GetMapping("/editarpessoa/{idpessoa}") //GetMapping subistitui o @RequestMapping acima
-    public ModelAndView editar(@PathVariable("idpessoa") Long idpessoa) {//idpessoas faz interação com thymeleaf
-        Optional<PessoaModel> pessoaModel = pessoaRepository.findById(idpessoa); //instanciando o objeto pessoa
-        ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa"); //retornando pra tela de cadastro
-        modelAndView.addObject("pessoaobj", pessoaModel.get()); //retornando pra tela de cadastro
+    //EDITAR (carrega os dados para a edição. Após clicar no submit do form, será direcionado o método salvar)
+    @GetMapping("/editarpessoa/{idpessoa}") //GetMapping subistitui o @RequestMapping
+    public ModelAndView editar(@PathVariable("idpessoa") Long idpessoa) throws NotFoundException {//idpessoas faz interação com thymeleaf
+        Optional<PessoaModel> pessoaModel = Optional.ofNullable(pessoaService.findById(idpessoa)); //instanciando o objeto pessoa
+        ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
+        modelAndView.addObject("pessoaobj", pessoaModel.get());
         modelAndView.addObject("profissoes", profissaoRepository.findAll());
         return modelAndView;
     }
@@ -159,7 +154,7 @@ public class PessoaController {
     public void imprimePdf(@RequestParam("nomepesquisa") String nomepesquisa,
                            @RequestParam("pesqsexo") String pesqsexo,
                            HttpServletRequest request,
-                           HttpServletResponse response) throws Exception {
+                           HttpServletResponse response, Pageable pageable) throws Exception {
 
         List<PessoaModel> pessoas = new ArrayList<PessoaModel>();
 
@@ -177,8 +172,7 @@ public class PessoaController {
             pessoas = pessoaRepository.findPessoaBySexo(pesqsexo);
 
         } else {/*Busca todos*/
-
-            Iterable<PessoaModel> iterator = pessoaRepository.findAll();
+            Iterable<PessoaModel> iterator = pessoaService.findAll(pageable);
             for (PessoaModel pessoa : iterator) {
                 pessoas.add(pessoa);
             }
@@ -205,9 +199,9 @@ public class PessoaController {
 
     //LISTAR TELEFONE
     @GetMapping("/telefones/{idpessoa}")
-    public ModelAndView telefones(@PathVariable("idpessoa") Long idpessoa) {
+    public ModelAndView telefones(@PathVariable("idpessoa") Long idpessoa) throws NotFoundException {
 
-        Optional<PessoaModel> pessoa = pessoaRepository.findById(idpessoa);
+        Optional<PessoaModel> pessoa = Optional.ofNullable(pessoaService.findById(idpessoa));
 
         ModelAndView modelAndView = new ModelAndView("cadastro/telefones");
         modelAndView.addObject("pessoaobj", pessoa.get());

@@ -101,7 +101,7 @@
             <tbody>
             <tr th:each="li : ${pessoas}">
                 <td th:text="${li.id}"></td>
-                <td><a th:href="@{/exemplo/detalhes/{idpessoa}(idpessoa=${li.id})}"><span
+                <td><a th:href="@{/telefones/{idpessoa}(idpessoa=${li.id})}"><span
                         th:text="${li.nome}"></span></a></td>
                 <td th:text="${li.sobrenome}"></td>
                 <td th:text="${li.idade}"></td>
