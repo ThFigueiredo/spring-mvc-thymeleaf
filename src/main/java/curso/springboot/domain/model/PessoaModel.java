@@ -69,6 +69,27 @@ public class PessoaModel implements Serializable {
 
     private String sexopessoa;
 
+    private String nomeFileCurriculo;
+    private String tipoFileCurriculo;
+
+    public String getNomeFileCurriculo() {
+        return nomeFileCurriculo;
+    }
+
+    public void setNomeFileCurriculo(String nomeFileCurriculo) {
+        this.nomeFileCurriculo = nomeFileCurriculo;
+    }
+
+    public String getTipoFileCurriculo() {
+        return tipoFileCurriculo;
+    }
+
+    public void setTipoFileCurriculo(String tipoFileCurriculo) {
+        this.tipoFileCurriculo = tipoFileCurriculo;
+    }
+
+
+
     @ManyToOne //muitas pessoas para uma profissão
     private ProfissaoModel profissaoModel; //criando pbjeto profissão
 

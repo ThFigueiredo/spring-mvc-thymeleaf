@@ -94,6 +94,7 @@
                 <th scope="col">Nome</th>
                 <th scope="col">Sobrenome</th>
                 <th scope="col">Idade</th>
+                <th scope="col">Download</th>
                 <th scope="col">Editar</th>
                 <th scope="col">Deletar</th>
             </tr>
@@ -105,6 +106,7 @@
                         th:text="${li.nome}"></span></a></td>
                 <td th:text="${li.sobrenome}"></td>
                 <td th:text="${li.idade}"></td>
+                <td><a th:href="@{'/baixarcurriculo/' + ${li.id}}"><span class="material-icons">download</span></a></td>
                 <td><a th:href="@{'/editarpessoa/' + ${li.id}}"><span class="material-icons">edit</span></a></td>
                 <td><a th:href="@{'/removerpessoa/' + ${li.id}}"><span class="material-icons">delete</span></a></td>
                 <!--                <td><a th:href="@{/editarpessoa/{idpessoa}(idpessoa=${li.id})}">Editar</a></td>-->

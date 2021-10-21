@@ -54,7 +54,9 @@ public class PessoaController {
                                BindingResult bindingResult, final MultipartFile file, Pageable pageable) throws IOException, NotFoundException {
 
         pessoaModel.setTelefones(telefoneRepository.getTelefones(pessoaModel.getId()));
-
+//        System.out.println(file.getContentType()); //pegando o tipo do arquivo
+//        System.out.println(file.getName());
+//        System.out.println(file.getOriginalFilename());
         //VALIDAÇÃO
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView("cadastro/listar"); //retonando para a tela cadastro pessoa
@@ -74,11 +76,17 @@ public class PessoaController {
 
         if (file.getSize() > 0) { /*Cadastrando um curriculo*/
             pessoaModel.setCurriculo(file.getBytes());
-        } else {
-            if (pessoaModel.getId() != null && pessoaModel.getId() > 0) {// editando // verifica se pessoa já está cadastrada no banco
-                byte[] curriculoTempo = pessoaService.
-                        findById(pessoaModel.getId()).getCurriculo();
-                pessoaModel.setCurriculo((curriculoTempo));
+            pessoaModel.setTipoFileCurriculo(file.getContentType());
+            pessoaModel.setNomeFileCurriculo(file.getOriginalFilename());
+        }else {
+            if (pessoaModel.getId() != null && pessoaModel.getId() > 0) {// editando
+
+                PessoaModel pessoalTemp = pessoaRepository.
+                        findById(pessoaModel.getId()).get();
+
+                pessoaModel.setCurriculo(pessoalTemp.getCurriculo());
+                pessoaModel.setTipoFileCurriculo(pessoalTemp.getTipoFileCurriculo());
+                pessoaModel.setNomeFileCurriculo(pessoalTemp.getNomeFileCurriculo());
             }
         }
         //--VALIDAÇÃO
@@ -224,6 +232,32 @@ public class PessoaController {
         modelAndView.addObject("pessoaobj", pessoa);
         modelAndView.addObject("telefones", telefoneRepository.getTelefones(pessoaid)); //telefones -> conexao com o thymeleaf
         return modelAndView;
+    }
+
+    @GetMapping("**/baixarcurriculo/{idpessoa}")
+    public void baixarcurriculo(@PathVariable("idpessoa") Long idpessoa,
+                                HttpServletResponse response) throws Exception {
+
+
+        /*Chame o serviço que faz a geração do relatorio*/
+        byte[] pdf = pessoaRepository.findById(idpessoa).get().getCurriculo();
+
+        if (pdf != null) {
+            /*Tamanho da resposta*/
+            response.setContentLength(pdf.length);
+
+            /*Definir na resposta o tipo de arquivo*/
+            response.setContentType("application/octet-stream");
+
+            /*Definir o cabeçalho da resposta*/
+            String headerKey = "Content-Disposition";
+            String headerValue = String.format("attachment; filename=\"%s\"", "relatorio.pdf");
+            response.setHeader(headerKey, headerValue);
+
+            /*Finaliza a resposta pro navegador*/
+            response.getOutputStream().write(pdf);
+        }
+
     }
 
 
