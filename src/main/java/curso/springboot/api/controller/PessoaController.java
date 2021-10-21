@@ -251,7 +251,8 @@ public class PessoaController {
 
             /*Definir o cabeçalho da resposta*/
             String headerKey = "Content-Disposition";
-            String headerValue = String.format("attachment; filename=\"%s\"", "relatorio.pdf");
+            String headerValue = String.format("attachment; filename=\"%s\"", "relatorio");
+            //String headerValue = String.format("attachment; filename=\"%s\"", "relatorio.pdf");
             response.setHeader(headerKey, headerValue);
 
             /*Finaliza a resposta pro navegador*/
