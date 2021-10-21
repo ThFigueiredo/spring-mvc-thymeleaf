@@ -7,8 +7,13 @@ import curso.springboot.domain.repository.ProfissaoRepository;
 import curso.springboot.domain.repository.TelefoneRepository;
 import curso.springboot.domain.service.PessoaService;
 import javassist.NotFoundException;
+import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -100,8 +105,7 @@ public class PessoaController {
     @RequestMapping(method = RequestMethod.GET, value = "/listapessoas")
     public ModelAndView pessoas(Pageable pageable) {
         ModelAndView andView = new ModelAndView("cadastro/listar");
-        Iterable<PessoaModel> pessoaIt = pessoaService.findAll(pageable);
-        andView.addObject("pessoas", pessoaIt);
+        andView.addObject("pessoas", pessoaService.findAll(PageRequest.of(0,5, Sort.by("nome"))));
         andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio
         return andView;
     }
@@ -216,6 +220,16 @@ public class PessoaController {
         modelAndView.addObject("telefones", telefoneRepository.getTelefones(idpessoa)); //lista os telefones ao entrar na pagina
         return modelAndView;
 
+    }
+    //LISTAR (CARREGANDO CONFORME PAGINAÇÃO
+    @GetMapping("/pagpessoa")
+    public ModelAndView carregaPessoaPaginacao(@PageableDefault(size = 5) Pageable pageable,
+                                               ModelAndView model) {
+        Page<PessoaModel> pagePessoa = pessoaService.findAll(pageable);
+        model.addObject("pessoa", pagePessoa);
+        model.addObject("pessoaobj", new PessoaModel());
+        model.setViewName("cadastro/cadastropessoa");
+        return model;
     }
 
     //CADASTRO TELEFONES PARA UMA PESSOA
