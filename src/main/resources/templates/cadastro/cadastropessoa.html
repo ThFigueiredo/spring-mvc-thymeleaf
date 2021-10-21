@@ -52,7 +52,7 @@
         <div th:each="m : ${msg}">
             <span th:text="${m}"> </span>
         </div>
-        <form action="salvarpessoa" id="formpessoa" method="post" th:object="${pessoaobj}" class="col s12"
+        <form th:action="@{/salvarpessoa}"  id="formpessoa" method="post" th:object="${pessoaobj}" class="col s12"
               enctype="multipart/form-data">
 
             <div class="container">

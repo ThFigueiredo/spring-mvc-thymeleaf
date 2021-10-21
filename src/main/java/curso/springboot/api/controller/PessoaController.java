@@ -40,7 +40,7 @@ public class PessoaController {
     private ProfissaoRepository profissaoRepository;
 
     //SALVAR (MÉTODO DE REDIRECIONAMENTO) (carrega os dados para a salvar. Após clicar no submit do form, será direcionado o método salvar)
-    @GetMapping("/cadpessoa")
+    @GetMapping("**/cadpessoa")
     public ModelAndView index2() {
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
         modelAndView.addObject("pessoaobj", new PessoaModel());
