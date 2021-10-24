@@ -106,9 +106,22 @@ public class PessoaController {
     public ModelAndView pessoas(Pageable pageable) {
         ModelAndView andView = new ModelAndView("cadastro/listar");
         andView.addObject("pessoas", pessoaService.findAll(PageRequest.of(0,5, Sort.by("nome"))));
-        andView.addObject("pessoaobj", new PessoaModel()); //passando objeto vazio
         return andView;
     }
+
+    //LISTAR (CARREGANDO CONFORME PAGINAÇÃO
+    @GetMapping("/pagpessoa")
+    public ModelAndView carregaPessoaPaginacao(@PageableDefault(size = 5) Pageable pageable, //@PageableDefault(size = 5 -> se fizer requisição pra /pagpessoa terá como valor padrão 5 páginas
+                                               ModelAndView model) {
+        //carregando as demais páginas
+        Page<PessoaModel> pagePessoa = pessoaService.findAll(pageable);
+        model.addObject("pessoas", pagePessoa);
+        model.setViewName("cadastro/listar");
+        return model;
+    }
+
+
+
     //EDITAR (carrega os dados para a edição. Após clicar no submit do form, será direcionado o método salvar)
     @GetMapping("/editarpessoa/{idpessoa}") //GetMapping subistitui o @RequestMapping
     public ModelAndView editar(@PathVariable("idpessoa") Long idpessoa) throws NotFoundException {//idpessoas faz interação com thymeleaf
@@ -220,16 +233,6 @@ public class PessoaController {
         modelAndView.addObject("telefones", telefoneRepository.getTelefones(idpessoa)); //lista os telefones ao entrar na pagina
         return modelAndView;
 
-    }
-    //LISTAR (CARREGANDO CONFORME PAGINAÇÃO
-    @GetMapping("/pagpessoa")
-    public ModelAndView carregaPessoaPaginacao(@PageableDefault(size = 5) Pageable pageable,
-                                               ModelAndView model) {
-        Page<PessoaModel> pagePessoa = pessoaService.findAll(pageable);
-        model.addObject("pessoa", pagePessoa);
-        model.addObject("pessoaobj", new PessoaModel());
-        model.setViewName("cadastro/cadastropessoa");
-        return model;
     }
 
     //CADASTRO TELEFONES PARA UMA PESSOA
