@@ -12,9 +12,11 @@ public interface PessoaService  {
     Page<PessoaModel> findAll(Pageable pageable);
     void update(Long id, PessoaModel entity) throws NotFoundException;
     void delete(Long id) throws NotFoundException;
+    PessoaModel setTelefones(Long id) throws NotFoundException;
 
     //PAGINAÇÃO
     Page<PessoaModel> findPaginated(int pageNo, int pageSize);
     Page<PessoaModel> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
+
 
 }

@@ -12,5 +12,7 @@ import java.util.List;
 @Transactional
 public interface TelefoneRepository extends JpaRepository<TelefoneModel, Long> {
     @Query("select  t from TelefoneModel t where t.pessoaModel.id = ?1")
-    public List<TelefoneModel> getTelefones(Long pessoaid);
+    List<TelefoneModel> getTelefones(Long pessoaid);
+    List<TelefoneModel> findAllByPessoa_Id(Long id);
+
 }

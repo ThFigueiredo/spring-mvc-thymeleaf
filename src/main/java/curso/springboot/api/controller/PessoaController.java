@@ -3,11 +3,11 @@ package curso.springboot.api.controller;
 import curso.springboot.domain.model.PessoaModel;
 import curso.springboot.domain.model.TelefoneModel;
 import curso.springboot.domain.repository.PessoaRepository;
-import curso.springboot.domain.repository.ProfissaoRepository;
 import curso.springboot.domain.repository.TelefoneRepository;
 import curso.springboot.domain.service.PessoaService;
+import curso.springboot.domain.service.ProfissaoService;
+import curso.springboot.domain.service.TelefoneService;
 import javassist.NotFoundException;
-import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,36 +29,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+//@Controller( value = "pessoa")
 @Controller
 public class PessoaController {
-    //void -> é quando nao tem retorno
+
+    private final ProfissaoService profissaoService;
+    private final TelefoneService telefoneService;
+    private final PessoaService pessoaService;
+
     @Autowired //anotação autowired
     private PessoaRepository pessoaRepository;
-
-    @Autowired
+    @Autowired //anotação autowired
     private TelefoneRepository telefoneRepository;
 
-    @Autowired
-    private PessoaService pessoaService;
 
-    @Autowired
-    private ProfissaoRepository profissaoRepository;
+    public PessoaController(ProfissaoService profissaoService, TelefoneService telefoneService, PessoaService pessoaService) {
+        this.profissaoService = profissaoService;
+        this.telefoneService = telefoneService;
+        this.pessoaService = pessoaService;
+    }
 
-    //SALVAR (MÉTODO DE REDIRECIONAMENTO) (carrega os dados para a salvar. Após clicar no submit do form, será direcionado o método salvar)
     @GetMapping("**/cadpessoa")
     public ModelAndView index2() {
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
         modelAndView.addObject("pessoaobj", new PessoaModel());
-        modelAndView.addObject("profissoes", profissaoRepository.findAll());
+        modelAndView.addObject("profissoes", profissaoService.findAll());
         return modelAndView;
     }
 
     //SALVAR
-    @PostMapping("**/salvarpessoa") //ignora o que vem antes -> serve para a ediçao
+    @PostMapping("**/salvarpessoa")
     public ModelAndView salvar(@Valid PessoaModel pessoaModel,
                                BindingResult bindingResult, final MultipartFile file, Pageable pageable) throws IOException, NotFoundException {
-
-        pessoaModel.setTelefones(telefoneRepository.getTelefones(pessoaModel.getId()));
 //        System.out.println(file.getContentType()); //pegando o tipo do arquivo
 //        System.out.println(file.getName());
 //        System.out.println(file.getOriginalFilename());
@@ -75,7 +77,7 @@ public class PessoaController {
             }
 
             modelAndView.addObject("msg", msg);
-            modelAndView.addObject("profissoes", profissaoRepository.findAll());
+            modelAndView.addObject("profissoes", profissaoService.findAll());
             return modelAndView;
         }
 
@@ -128,7 +130,7 @@ public class PessoaController {
         Optional<PessoaModel> pessoaModel = Optional.ofNullable(pessoaService.findById(idpessoa)); //instanciando o objeto pessoa
         ModelAndView modelAndView = new ModelAndView("cadastro/cadastropessoa");
         modelAndView.addObject("pessoaobj", pessoaModel.get());
-        modelAndView.addObject("profissoes", profissaoRepository.findAll());
+        modelAndView.addObject("profissoes", profissaoService.findAll());
         return modelAndView;
     }
 
@@ -238,12 +240,13 @@ public class PessoaController {
     //CADASTRO TELEFONES PARA UMA PESSOA
     @PostMapping("**/addfonePessoa/{pessoaid}")
     public ModelAndView addFonePessoa(TelefoneModel telefoneModel,
-                                      @PathVariable("pessoaid") Long pessoaid) {
+                                      @PathVariable("pessoaid") Long pessoaid) throws NotFoundException {
 
         PessoaModel pessoa = pessoaRepository.findById(pessoaid).get();
+        //PessoaModel pessoa = pessoaService.findById(pessoaid).get();
         telefoneModel.setPessoa(pessoa);
 
-        telefoneRepository.save(telefoneModel);
+        telefoneService.create(telefoneModel);
 
         ModelAndView modelAndView = new ModelAndView("cadastro/telefones");
         modelAndView.addObject("pessoaobj", pessoa);

@@ -1,7 +1,9 @@
 package curso.springboot.domain.service;
 
 import curso.springboot.domain.model.PessoaModel;
+import curso.springboot.domain.model.TelefoneModel;
 import curso.springboot.domain.repository.PessoaRepository;
+import curso.springboot.domain.repository.TelefoneRepository;
 import javassist.NotFoundException;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
@@ -11,24 +13,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PessoaServiceImpl implements PessoaService {
 
-    private final PessoaRepository repository;
+    private final PessoaRepository pessoaRepository;
+    private final TelefoneRepository telefoneRepository;
 
-    public PessoaServiceImpl(PessoaRepository repository) {
-        this.repository = repository;
+    public PessoaServiceImpl(PessoaRepository pessoaRepository, TelefoneRepository telefoneRepository) {
+        this.pessoaRepository = pessoaRepository;
+        this.telefoneRepository = telefoneRepository;
     }
 
 
     @Override
     public PessoaModel create(PessoaModel entity) {
-        return repository.save(entity);
+        return pessoaRepository.save(entity);
     }
 
     @Override
     public PessoaModel findById(Long id) throws NotFoundException {
-        return repository.findById(id)
+        return pessoaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Organização não encontrada"));
     }
 
@@ -40,7 +46,7 @@ public class PessoaServiceImpl implements PessoaService {
 
     public Page<PessoaModel> findAll(Pageable pageable) {
         //List<PessoaModel> example = repository.findAllByNomeLike("aa%"); // findAllByNomeLike essa consulta foi criada em reposítory
-        return repository.findAll(pageable);
+        return pessoaRepository.findAll(pageable);
     }
 
     @Override
@@ -52,13 +58,21 @@ public class PessoaServiceImpl implements PessoaService {
 
         mapper.map(entity, exampleModel);
 
-        repository.save(exampleModel);
+        pessoaRepository.save(exampleModel);
     }
 
     @Override
     public void delete(Long id) throws NotFoundException {
         PessoaModel pessoaModel = findById(id);
-        repository.delete(pessoaModel);
+        pessoaRepository.delete(pessoaModel);
+    }
+
+    @Override
+    public PessoaModel setTelefones(Long idPessoa) throws NotFoundException {
+        PessoaModel pessoaModel = findById(idPessoa);
+        List<TelefoneModel> telefones = telefoneRepository.findAllByPessoa_Id(idPessoa);
+        pessoaModel.setTelefones(telefones);
+        return pessoaModel;
     }
 
     //PAGINAÇÃO
@@ -73,6 +87,6 @@ public class PessoaServiceImpl implements PessoaService {
                 Sort.by(sortField).descending();
 
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-        return this.repository.findAll(pageable);
+        return this.pessoaRepository.findAll(pageable);
     }
 }

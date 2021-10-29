@@ -245,6 +245,8 @@ public class PessoaModel implements Serializable {
     public void setSexopessoa(String sexopessoa) {
         this.sexopessoa = sexopessoa;
     }
+
+
 }
 
 //
