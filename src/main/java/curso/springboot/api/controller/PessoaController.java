@@ -242,8 +242,7 @@ public class PessoaController {
     public ModelAndView addFonePessoa(TelefoneModel telefoneModel,
                                       @PathVariable("pessoaid") Long pessoaid) throws NotFoundException {
 
-        PessoaModel pessoa = pessoaRepository.findById(pessoaid).get();
-        //PessoaModel pessoa = pessoaService.findById(pessoaid).get();
+        PessoaModel pessoa = pessoaService.findById(pessoaid).get();
         telefoneModel.setPessoa(pessoa);
 
         telefoneService.create(telefoneModel);

@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 @Transactional
 public interface TelefoneRepository extends JpaRepository<TelefoneModel, Long> {
-    @Query("select  t from TelefoneModel t where t.pessoaModel.id = ?1")
-    List<TelefoneModel> getTelefones(Long pessoaid);
+//    @Query("select  t from TelefoneModel t where t.pessoaModel.id = ?1")
+//    List<TelefoneModel> getTelefones(Long pessoaid);
     List<TelefoneModel> findAllByPessoa_Id(Long id);
 
 }
