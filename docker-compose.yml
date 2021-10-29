@@ -1,14 +1,15 @@
-version: '3.1'
+version: "3.1"
 services:
-  db:
-    image: mysql
-    container_name: mysql
+  teste-postgres-compose:
+    image: postgres
+    container_name: container_fab
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: organizacional
     ports:
-      - "3306:3306"
-    volumes:
-      - thiago_data:/var/lib/mysql
+      - "5434:5432"
 
-volumes:
-  thiago_data:
+
+
+
